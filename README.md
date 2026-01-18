@@ -1,153 +1,123 @@
-# 🔍 AI Fact Checker
+# Fact Checker - AI-Powered Document Verification
 
-An automated fact-checking web application that verifies claims in PDF documents against live web data using AI.
+A web application that automatically verifies factual claims in PDF documents by cross-referencing them with current web data.
 
-## 🌟 Features
+## About This Project
 
-- **PDF Upload**: Drag-and-drop interface for easy document upload
-- **AI-Powered Extraction**: Automatically identifies verifiable claims using OpenRouter AI
-- **Live Verification**: Cross-references claims against current web data via Tavily Search
-- **Categorized Results**: Claims are classified as:
-  - ✅ **Verified** - Matches current data
-  - ⚠️ **Inaccurate** - Partially correct but outdated
-  - ❌ **False** - Contradicts evidence or no evidence found
-- **Source Citations**: Provides web sources for each verification
+This application was built to solve a common problem: verifying the accuracy of information in documents. It takes a PDF file, extracts factual claims using AI, searches the web for current information, and categorizes each claim as verified, inaccurate, or false.
 
-## 🚀 Quick Start
+The motivation came from seeing how easily misinformation spreads. This tool helps quickly identify outdated statistics, false claims, and verify facts against current sources.
+
+## How It Works
+
+1. **Upload a PDF** - Drag and drop any PDF document
+2. **Automatic Extraction** - The system identifies specific claims like statistics, dates, and financial figures
+3. **Web Verification** - Each claim is checked against current web sources
+4. **Clear Results** - Claims are categorized with evidence and source citations
+
+## Tech Stack
+
+**Backend:**
+- Flask for the web framework
+- OpenRouter API for AI-powered claim extraction
+- Tavily Search API for real-time web verification
+- pdfplumber for PDF text extraction
+
+**Frontend:**
+- Vanilla JavaScript for interactivity
+- Modern CSS with responsive design
+- Drag-and-drop file upload
+
+## Getting Started
 
 ### Prerequisites
 
 - Python 3.8 or higher
-- OpenRouter API key (free tier available)
-- Tavily API key (free tier available)
+- API keys from OpenRouter and Tavily (both offer free tiers)
 
 ### Installation
 
-1. **Clone or download this repository**
+1. Clone this repository
+```bash
+git clone https://github.com/NIKUNSAINI12/fact-checker-app.git
+cd fact-checker-app
+```
 
-2. **Install dependencies**
+2. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Set up environment variables**
+3. Set up environment variables
 
 Create a `.env` file in the project root:
-```env
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-TAVILY_API_KEY=your_tavily_api_key_here
-FLASK_SECRET_KEY=your_random_secret_key_here
+```
+OPENROUTER_API_KEY=your_openrouter_key
+TAVILY_API_KEY=your_tavily_key
+FLASK_SECRET_KEY=your_secret_key
 ```
 
-**Get your API keys:**
-- **OpenRouter**: Visit [openrouter.ai](https://openrouter.ai/) and sign up for a free account
-- **Tavily**: Visit [tavily.com](https://tavily.com/) and sign up for a free API key
+Get your API keys:
+- OpenRouter: https://openrouter.ai/
+- Tavily: https://tavily.com/
 
-4. **Run the application**
+4. Run the application
 ```bash
 python app.py
 ```
 
-5. **Open your browser**
-Navigate to `http://localhost:5000`
+Visit `http://localhost:5000` in your browser.
 
-## 📖 Usage
-
-1. **Upload a PDF**: Drag and drop a PDF file or click to browse
-2. **Wait for Processing**: The app will extract and verify claims (this may take 1-2 minutes)
-3. **Review Results**: See verified, inaccurate, and false claims with evidence and sources
-4. **Check Another Document**: Click "Check Another Document" to verify more files
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```
-.
-├── app.py                  # Main Flask application
-├── config.py              # Configuration and API settings
-├── pdf_processor.py       # PDF text extraction
-├── claim_extractor.py     # AI-powered claim extraction
-├── fact_verifier.py       # Web search and verification
-├── requirements.txt       # Python dependencies
-├── .env                   # Environment variables (create this)
-├── templates/
-│   ├── index.html        # Upload page
-│   └── results.html      # Results display
-└── static/
-    ├── css/
-    │   └── style.css     # Styling
-    └── js/
-        └── main.js       # Frontend logic
+├── app.py                 # Main Flask application
+├── config.py             # Configuration settings
+├── pdf_processor.py      # PDF text extraction
+├── claim_extractor.py    # AI claim identification
+├── fact_verifier.py      # Web search and verification
+├── templates/            # HTML templates
+├── static/              # CSS and JavaScript
+└── requirements.txt     # Python dependencies
 ```
 
-## 🔧 Configuration
+## Features
 
-Edit `config.py` to customize:
-- **AI Model**: Change `OPENROUTER_MODEL` to use different free models
-- **File Size Limit**: Adjust `MAX_FILE_SIZE_MB`
-- **Upload Folder**: Change `UPLOAD_FOLDER` path
+- **Smart Claim Detection**: Automatically identifies verifiable facts in documents
+- **Real-Time Verification**: Searches current web sources for accurate information
+- **Source Citations**: Provides links to sources for each verification
+- **User-Friendly Interface**: Clean, modern design with drag-and-drop upload
+- **Detailed Results**: Shows why each claim was categorized as verified, inaccurate, or false
 
-## 🌐 Deployment
+## Deployment
 
-### Deploy to Render
+The app can be deployed to various platforms:
 
-1. Create a `render.yaml`:
-```yaml
-services:
-  - type: web
-    name: fact-checker
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
-    envVars:
-      - key: OPENROUTER_API_KEY
-        sync: false
-      - key: TAVILY_API_KEY
-        sync: false
-      - key: FLASK_SECRET_KEY
-        generateValue: true
-```
+**Railway** (Recommended):
+1. Connect your GitHub repository
+2. Add environment variables in the dashboard
+3. Deploy automatically
 
-2. Push to GitHub
-3. Connect to Render and deploy
-
-### Deploy to Railway
-
-1. Push to GitHub
-2. Connect to Railway
+**Render**:
+1. Create a new Web Service
+2. Connect your repository
 3. Add environment variables
-4. Deploy automatically
+4. Deploy
 
-## 🧪 Testing
+Note: Free tier deployments may have memory limitations for processing large PDFs.
 
-Test with the provided `Assessment_Intern - Founder's Office AI (1).pdf` which contains intentional false claims about:
-- Bitcoin prices
-- AI model releases
-- SpaceX missions
-- Economic indicators
+## Development Notes
 
-The app should correctly flag these as false or inaccurate.
+This project uses:
+- OpenRouter's free models for cost-effective AI processing
+- Tavily's search API for reliable web verification
+- Gunicorn for production deployment
+- Environment-based configuration for security
 
-## 🛠️ Technologies Used
+## License
 
-- **Backend**: Flask (Python)
-- **PDF Processing**: pdfplumber
-- **AI**: OpenRouter API (free models)
-- **Search**: Tavily API
-- **Frontend**: HTML, CSS, JavaScript
-- **Styling**: Modern glassmorphism design
+MIT License - feel free to use this project for your own purposes.
 
-## 📝 License
+## Acknowledgments
 
-MIT License - feel free to use for your projects!
-
-## 🤝 Contributing
-
-Contributions welcome! Please open an issue or submit a pull request.
-
-## 📧 Support
-
-For issues or questions, please open a GitHub issue.
-
----
-
-**Built with ❤️ using OpenRouter AI & Tavily Search**
+Built as a demonstration of combining AI capabilities with web search to create practical verification tools.
