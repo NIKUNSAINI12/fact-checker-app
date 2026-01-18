@@ -63,22 +63,22 @@ tryAgainBtn.addEventListener('click', () => {
 // Handle file upload
 function handleFiles(files) {
     if (files.length === 0) return;
-    
+
     const file = files[0];
-    
+
     // Validate file type
     if (!file.name.toLowerCase().endsWith('.pdf')) {
         showError('Please upload a PDF file');
         return;
     }
-    
+
     // Validate file size (10MB max)
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
         showError('File size must be less than 10MB');
         return;
     }
-    
+
     // Upload file
     uploadFile(file);
 }
@@ -86,27 +86,41 @@ function handleFiles(files) {
 // Upload file to server
 function uploadFile(file) {
     showLoading();
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     fetch('/upload', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            showError(data.error);
-        } else if (data.success) {
-            // Redirect to results page
-            window.location.href = data.redirect;
-        }
-    })
-    .catch(error => {
-        console.error('Upload error:', error);
-        showError('Upload failed. Please try again.');
-    });
+        .then(response => {
+            // Check if response is ok
+            if (!response.ok) {
+                // Try to get error message from response
+                return response.text().then(text => {
+                    try {
+                        const json = JSON.parse(text);
+                        throw new Error(json.error || 'Upload failed');
+                    } catch (e) {
+                        throw new Error(`Server error: ${response.status} - ${text.substring(0, 100)}`);
+                    }
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                showError(data.error);
+            } else if (data.success) {
+                // Redirect to results page
+                window.location.href = data.redirect;
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            showError(error.message || 'Upload failed. Please try again.');
+        });
 }
 
 // Show loading state
@@ -114,15 +128,15 @@ function showLoading() {
     dropZone.style.display = 'none';
     errorSection.style.display = 'none';
     loadingSection.style.display = 'block';
-    
+
     // Animate loading text
     let dots = 0;
     const loadingInterval = setInterval(() => {
         dots = (dots + 1) % 4;
-        document.getElementById('loadingText').textContent = 
+        document.getElementById('loadingText').textContent =
             'Processing your document' + '.'.repeat(dots);
     }, 500);
-    
+
     // Store interval ID for cleanup
     loadingSection.dataset.intervalId = loadingInterval;
 }
@@ -134,7 +148,7 @@ function showError(message) {
     if (intervalId) {
         clearInterval(parseInt(intervalId));
     }
-    
+
     dropZone.style.display = 'none';
     loadingSection.style.display = 'none';
     errorSection.style.display = 'block';
