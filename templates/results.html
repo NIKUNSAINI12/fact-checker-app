@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fact Check Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Fact Check Results</h1>
+            <p class="subtitle">{{ filename }}</p>
+        </header>
+
+        <main>
+            <div class="results-summary">
+                <div class="summary-card verified">
+                    <div class="summary-number">{{ results.verified|length }}</div>
+                    <div class="summary-label">✅ Verified</div>
+                </div>
+                <div class="summary-card inaccurate">
+                    <div class="summary-number">{{ results.inaccurate|length }}</div>
+                    <div class="summary-label">⚠️ Inaccurate</div>
+                </div>
+                <div class="summary-card false">
+                    <div class="summary-number">{{ results.false|length }}</div>
+                    <div class="summary-label">❌ False</div>
+                </div>
+            </div>
+
+            {% if results.verified %}
+            <section class="results-section">
+                <h2 class="section-title verified-title">✅ Verified Claims</h2>
+                {% for item in results.verified %}
+                <div class="claim-card verified-card">
+                    <div class="claim-header">
+                        <span class="claim-badge verified-badge">Verified</span>
+                    </div>
+                    <p class="claim-text">{{ item.claim }}</p>
+                    <div class="claim-details">
+                        <p class="claim-reason"><strong>Reason:</strong> {{ item.reason }}</p>
+                        <p class="claim-evidence"><strong>Evidence:</strong> {{ item.evidence }}</p>
+                        {% if item.sources %}
+                        <div class="claim-sources">
+                            <strong>Sources:</strong>
+                            <ul>
+                                {% for source in item.sources %}
+                                <li><a href="{{ source.url }}" target="_blank">{{ source.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if results.inaccurate %}
+            <section class="results-section">
+                <h2 class="section-title inaccurate-title">⚠️ Inaccurate Claims</h2>
+                {% for item in results.inaccurate %}
+                <div class="claim-card inaccurate-card">
+                    <div class="claim-header">
+                        <span class="claim-badge inaccurate-badge">Inaccurate</span>
+                    </div>
+                    <p class="claim-text">{{ item.claim }}</p>
+                    <div class="claim-details">
+                        <p class="claim-reason"><strong>Reason:</strong> {{ item.reason }}</p>
+                        <p class="claim-evidence"><strong>Evidence:</strong> {{ item.evidence }}</p>
+                        {% if item.sources %}
+                        <div class="claim-sources">
+                            <strong>Sources:</strong>
+                            <ul>
+                                {% for source in item.sources %}
+                                <li><a href="{{ source.url }}" target="_blank">{{ source.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if results.false %}
+            <section class="results-section">
+                <h2 class="section-title false-title">❌ False Claims</h2>
+                {% for item in results.false %}
+                <div class="claim-card false-card">
+                    <div class="claim-header">
+                        <span class="claim-badge false-badge">False</span>
+                    </div>
+                    <p class="claim-text">{{ item.claim }}</p>
+                    <div class="claim-details">
+                        <p class="claim-reason"><strong>Reason:</strong> {{ item.reason }}</p>
+                        <p class="claim-evidence"><strong>Evidence:</strong> {{ item.evidence }}</p>
+                        {% if item.sources %}
+                        <div class="claim-sources">
+                            <strong>Sources:</strong>
+                            <ul>
+                                {% for source in item.sources %}
+                                <li><a href="{{ source.url }}" target="_blank">{{ source.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{{ url_for('index') }}" class="btn-primary">Check Another Document</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by OpenRouter AI & Tavily Search</p>
+        </footer>
+    </div>
+</body>
+
+</html>
